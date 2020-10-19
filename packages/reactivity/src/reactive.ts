@@ -134,11 +134,12 @@ export function shallowReadonly<T extends object>(
 }
 
 function createReactiveObject(
-  target: Target,
+  target: Target, // 要创建为响应式的目标对象
   isReadonly: boolean,
   baseHandlers: ProxyHandler<any>,
   collectionHandlers: ProxyHandler<any>
 ) {
+  // 如果不是对象类型，(开发环境下)直接报出警告并返回
   if (!isObject(target)) {
     if (__DEV__) {
       console.warn(`value cannot be made reactive: ${String(target)}`)
@@ -154,6 +155,7 @@ function createReactiveObject(
     return target
   }
   // target already has corresponding Proxy
+  // readonlyMap 和 reactiveMap 实际上都是 WeakMap<Target, any> 数据类型
   const proxyMap = isReadonly ? readonlyMap : reactiveMap
   const existingProxy = proxyMap.get(target)
   if (existingProxy) {
@@ -164,6 +166,7 @@ function createReactiveObject(
   if (targetType === TargetType.INVALID) {
     return target
   }
+  // 创建Proxy代理对象
   const proxy = new Proxy(
     target,
     targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers
