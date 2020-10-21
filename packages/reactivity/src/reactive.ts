@@ -166,7 +166,7 @@ function createReactiveObject(
   if (targetType === TargetType.INVALID) {
     return target
   }
-  // 创建Proxy代理对象
+  // 创建Proxy代理对象，在之前的步骤中已经确定了target是一个可以操作的对象
   const proxy = new Proxy(
     target,
     targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers
